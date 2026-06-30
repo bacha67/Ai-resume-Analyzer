@@ -1,9 +1,10 @@
 import type { Route } from "./+types/home";
 import Navbar from "~/components/Navbar";
-// import ResumeCard from "~/components/ResumeCard";
+import ResumeCard from "~/components/ResumeCard";
 // import {usePuterStore} from "~/lib/puter";
 import { Link, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
+import { resumes as mockResumes } from "../../constants/index";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -15,7 +16,7 @@ export function meta({ }: Route.MetaArgs) {
 export default function Home() {
   // const { auth, kv } = usePuterStore();
   const navigate = useNavigate();
-  const [resumes, setResumes] = useState<Resume[]>([]);
+  const [resumes, setResumes] = useState<Resume[]>(mockResumes);
   const [loadingResumes, setLoadingResumes] = useState(false);
 
   // useEffect(() => {
@@ -57,13 +58,13 @@ export default function Home() {
         </div>
       )}
 
-      {/* {!loadingResumes && resumes.length > 0 && (
-          <div className="resumes-section">
-            {resumes.map((resume) => (
-                <ResumeCard key={resume.id} resume={resume} />
-            ))}
-          </div>
-      )} */}
+      {!loadingResumes && resumes.length > 0 && (
+        <div className="resumes-section">
+          {resumes.map((resume) => (
+            <ResumeCard key={resume.id} resume={resume} />
+          ))}
+        </div>
+      )}
 
     </section>
   </main>
