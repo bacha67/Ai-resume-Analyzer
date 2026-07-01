@@ -30,9 +30,17 @@ export default function Home() {
 
       const parsedResumes = resumes?.map((resume) => (
         JSON.parse(resume.value) as Resume
-      ))
+      ));
 
-      setResumes(parsedResumes || []);
+      // Deduplicate by id in case of duplicate KV entries
+      const seen = new Set<string>();
+      const uniqueResumes = (parsedResumes || []).filter((r) => {
+        if (!r.id || seen.has(r.id)) return false;
+        seen.add(r.id);
+        return true;
+      });
+
+      setResumes(uniqueResumes);
       setLoadingResumes(false);
     }
 
