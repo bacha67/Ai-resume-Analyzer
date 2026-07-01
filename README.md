@@ -83,4 +83,4 @@ If you want to run this application against a fully self-hosted Puter environmen
 
 ---
 
-Built with ❤️ using [React Router](https://reactrouter.com) and [Puter.js](https://puter.com).
+Built with ❤️ using [React Router](https://reactrouter.com) and [Puter.js](https://puter.com). ✨
