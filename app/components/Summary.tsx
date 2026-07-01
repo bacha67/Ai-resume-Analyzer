@@ -7,12 +7,12 @@ const Category = ({ title, score }: { title: string, score: number }) => {
             ? 'text-yellow-600' : 'text-red-600';
 
     return (
-        <div className="category flex flex-row justify-between items-center bg-gray-50 rounded-2xl p-4 w-full">
+        <div className="flex flex-row justify-between items-center w-full py-4 border-b border-gray-100 last:border-b-0">
             <div className="flex flex-row gap-3 items-center">
                 <p className="text-lg font-semibold text-gray-800">{title}</p>
                 <ScoreBadge score={score} />
             </div>
-            <p className="text-lg font-bold">
+            <p className="text-lg font-bold text-gray-400">
                 <span className={textColor}>{score}</span>/100
             </p>
         </div>

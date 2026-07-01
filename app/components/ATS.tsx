@@ -58,7 +58,7 @@ const ATS: React.FC<ATSProps> = ({ score, suggestions }) => {
                                 alt={suggestion.type === "good" ? "Check" : "Warning"}
                                 className="w-5 h-5 mt-1"
                             />
-                            <p className={suggestion.type === "good" ? "text-green-700" : "text-amber-700"}>
+                            <p className="text-gray-700 text-sm">
                                 {suggestion.tip}
                             </p>
                         </div>

@@ -55,7 +55,7 @@ const Upload = () => {
         setStatusText('Analyzing...');
 
         const feedback = await ai.feedback(
-            uploadedFile.path,
+            uploadedImage.path,
             prepareInstructions({ jobTitle, jobDescription, AIResponseFormat })
         )
         if (!feedback) return setStatusText('Error: Failed to analyze resume');
@@ -64,7 +64,16 @@ const Upload = () => {
             ? feedback.message.content
             : feedback.message.content[0].text;
 
-        data.feedback = JSON.parse(feedbackText);
+        let cleanText = feedbackText.trim();
+        if (cleanText.startsWith("```")) {
+            cleanText = cleanText.replace(/^```[a-zA-Z]*\n?/, "");
+        }
+        if (cleanText.endsWith("```")) {
+            cleanText = cleanText.replace(/```$/, "");
+        }
+        cleanText = cleanText.trim();
+
+        data.feedback = JSON.parse(cleanText);
         await kv.set(`resume:${uuid}`, JSON.stringify(data));
 
 
