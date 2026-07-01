@@ -25,8 +25,9 @@ const Upload = () => {
         setIsProcessing(true);
 
         setStatusText('Uploading the file...');
-        const uploadedFile = await fs.upload([file]);
-        if (!uploadedFile) return setStatusText('Error: Failed to upload file');
+        const uploadedFileResult = await fs.upload([file]);
+        const uploadedFile = Array.isArray(uploadedFileResult) ? uploadedFileResult[0] : uploadedFileResult;
+        if (!uploadedFile?.path) return setStatusText('Error: Failed to upload file');
 
 
         setStatusText('Converting to image...');
@@ -34,8 +35,9 @@ const Upload = () => {
         if (!imageFile.file) return setStatusText(`Error: ${imageFile.error || 'Failed to convert PDF to image'}`);
 
         setStatusText('Uploading the image...');
-        const uploadedImage = await fs.upload([imageFile.file]);
-        if (!uploadedImage) return setStatusText('Error: Failed to upload image');
+        const uploadedImageResult = await fs.upload([imageFile.file]);
+        const uploadedImage = Array.isArray(uploadedImageResult) ? uploadedImageResult[0] : uploadedImageResult;
+        if (!uploadedImage?.path) return setStatusText('Error: Failed to upload image');
 
 
         setStatusText('Preparing data...');
@@ -43,7 +45,7 @@ const Upload = () => {
         const data = {
             id: uuid,
             resumePath: uploadedFile.path,
-            imagePath: '',
+            imagePath: uploadedImage.path,
             companyName, jobTitle, jobDescription,
             feedback: '',
         }
@@ -68,7 +70,7 @@ const Upload = () => {
 
         setStatusText('Analysis complete, redirecting...');
         console.log(data);
-        // navigate(`/resume/${uuid}`);
+        navigate(`/resume/${uuid}`);
         setIsProcessing(false);
     }
 
