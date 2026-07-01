@@ -29,26 +29,33 @@ const Resume = () => {
                 if (!resume) return;
 
                 const data = JSON.parse(resume);
+                setFeedback(data.feedback);
 
                 if (data.resumePath) {
-                    const resumeBlob = await fs.read(data.resumePath);
-                    if (resumeBlob) {
-                        const pdfBlob = new Blob([resumeBlob], { type: 'application/pdf' });
-                        const resumeUrl = URL.createObjectURL(pdfBlob);
-                        setResumeUrl(resumeUrl);
+                    try {
+                        const resumeBlob = await fs.read(data.resumePath);
+                        if (resumeBlob) {
+                            const pdfBlob = new Blob([resumeBlob], { type: 'application/pdf' });
+                            const resumeUrl = URL.createObjectURL(pdfBlob);
+                            setResumeUrl(resumeUrl);
+                        }
+                    } catch (e) {
+                        console.error("Failed to read resume PDF:", e);
                     }
                 }
 
                 if (data.imagePath) {
-                    const imageBlob = await fs.read(data.imagePath);
-                    if (imageBlob) {
-                        const imgBlob = new Blob([imageBlob], { type: 'image/png' });
-                        const imageUrl = URL.createObjectURL(imgBlob);
-                        setImageUrl(imageUrl);
+                    try {
+                        const imageBlob = await fs.read(data.imagePath);
+                        if (imageBlob) {
+                            const imgBlob = new Blob([imageBlob], { type: 'image/png' });
+                            const imageUrl = URL.createObjectURL(imgBlob);
+                            setImageUrl(imageUrl);
+                        }
+                    } catch (e) {
+                        console.error("Failed to read resume image:", e);
                     }
                 }
-
-                setFeedback(data.feedback);
             } catch (err) {
                 console.error("Failed to load resume details:", err);
             }

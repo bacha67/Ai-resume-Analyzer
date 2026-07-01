@@ -2,7 +2,7 @@ import type { Route } from "./+types/home";
 import Navbar from "~/components/Navbar";
 import ResumeCard from "~/components/ResumeCard";
 import { usePuterStore } from "~/lib/puter";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 
 export function meta({ }: Route.MetaArgs) {
@@ -13,53 +13,31 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const { auth, kv, fs, isLoading } = usePuterStore();
+  const { auth, kv } = usePuterStore();
   const navigate = useNavigate();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loadingResumes, setLoadingResumes] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && !auth.isAuthenticated) {
-      navigate('/auth?next=/');
-    }
-  }, [isLoading, auth.isAuthenticated, navigate]);
+    if (!auth.isAuthenticated) navigate('/auth?next=/');
+  }, [auth.isAuthenticated])
 
   useEffect(() => {
     const loadResumes = async () => {
       setLoadingResumes(true);
-      try {
-        const items = (await kv.list('resume:*', true)) as any[];
-        if (items && items.length > 0) {
-          const parsedResumes = await Promise.all(items.map(async (item) => {
-            const parsed = JSON.parse(item.value) as Resume;
-            if (parsed.imagePath) {
-              try {
-                const imageBlob = await fs.read(parsed.imagePath);
-                if (imageBlob) {
-                  const imgBlob = new Blob([imageBlob], { type: 'image/png' });
-                  parsed.imagePath = URL.createObjectURL(imgBlob);
-                }
-              } catch (e) {
-                console.error("Failed to load resume image", parsed.imagePath, e);
-              }
-            }
-            return parsed;
-          }));
-          setResumes(parsedResumes);
-        } else {
-          setResumes([]);
-        }
-      } catch (err) {
-        console.error("Failed to load resumes from Puter KV:", err);
-      } finally {
-        setLoadingResumes(false);
-      }
-    };
 
-    if (!isLoading && auth.isAuthenticated) {
-      loadResumes();
+      const resumes = (await kv.list('resume:*', true)) as KVItem[];
+
+      const parsedResumes = resumes?.map((resume) => (
+        JSON.parse(resume.value) as Resume
+      ))
+
+      setResumes(parsedResumes || []);
+      setLoadingResumes(false);
     }
-  }, [isLoading, auth.isAuthenticated, kv, fs]);
+
+    loadResumes()
+  }, []);
 
   return <main className="bg-[url('/images/bg-main.svg')] bg-cover">
     <Navbar />
@@ -87,6 +65,13 @@ export default function Home() {
         </div>
       )}
 
+      {!loadingResumes && resumes?.length === 0 && (
+        <div className="flex flex-col items-center justify-center mt-10 gap-4">
+          <Link to="/upload" className="primary-button w-fit text-xl font-semibold">
+            Upload Resume
+          </Link>
+        </div>
+      )}
     </section>
   </main>
 }
