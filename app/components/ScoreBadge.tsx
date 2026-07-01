@@ -1,23 +1,26 @@
-type ScoreBadgeProps = {
+interface ScoreBadgeProps {
     score: number;
-};
+}
 
-const ScoreBadge = ({ score }: ScoreBadgeProps) => {
-    let bgColorClass = "bg-[#f9e3e2] text-[#752522]"; // red
-    let label = "Poor";
+const ScoreBadge: React.FC<ScoreBadgeProps> = ({ score }) => {
+    let badgeColor = '';
+    let badgeText = '';
 
-    if (score >= 80) {
-        bgColorClass = "bg-[#d5faf1] text-[#254d4a]"; // green
-        label = "Excellent";
-    } else if (score >= 50) {
-        bgColorClass = "bg-[#fceed8] text-[#73321b]"; // yellow
-        label = "Average";
+    if (score > 70) {
+        badgeColor = 'bg-badge-green text-green-600';
+        badgeText = 'Strong';
+    } else if (score > 49) {
+        badgeColor = 'bg-badge-yellow text-yellow-600';
+        badgeText = 'Good Start';
+    } else {
+        badgeColor = 'bg-badge-red text-red-600';
+        badgeText = 'Needs Work';
     }
 
     return (
-        <span className={`score-badge ${bgColorClass} font-semibold text-xs py-1 px-3`}>
-            {label} ({score})
-        </span>
+        <div className={`px-3 py-1 rounded-full ${badgeColor}`}>
+            <p className="text-sm font-medium">{badgeText}</p>
+        </div>
     );
 };
 

@@ -29,7 +29,7 @@ const ResumeCard = ({ resume }: ResumeCardProps) => {
             <div className="gradient-border animate-in fade-in duration-1000">
                 <div className="w-full h-full">
                     <img
-                        src={resume.resumeUrl || resume.imagePath}
+                        src={resume.resumeUrl || resume.imagePath || "/images/resume_01.png"}
                         alt="resume"
                         className="w-full h-[350px] max-sm:h-[200px] object-cover object-top rounded-lg"
                     />
